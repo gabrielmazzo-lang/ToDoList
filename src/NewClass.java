@@ -44,7 +44,46 @@ public class NewClass {
                         System.out.println("Tarefa adicionada com sucesso");
            }
                     
-           break;         
+           break;    
+           
+                case 2:
+                System.out.println("Minhas tarefas");
+                
+                boolean existeTarefa = false;
+                
+                for(int i = 0; i < tarefas.length; i++){
+                    if(tarefas[i] != null){
+                        existeTarefa = true;
+                        if(concluidas[i] == true){
+                            System.out.println((i + 1) + " - [x] " + tarefas[i]);
+                        } else{
+                            System.out.println((i + 1) + " - [] " + tarefas[i]);
+                        }
+                    }
+                }
+                
+                if (existeTarefa == false){
+                    System.out.println("Nenhuma tarefa registrada!");
+                }
+                
+                break;
+                
+                case 3:
+                    System.out.println("Digite o numero da tarefa que deseja concluir: ");
+                    int numeroConcluir = scanner.nextInt();
+                    
+                    int indiceConcluir = numeroConcluir = -1;
+                    
+                    if (indiceConcluir >= 0 && 
+                            indiceConcluir < tarefas.length &&
+                            tarefas[indiceConcluir] != null){
+                        concluidas[indiceConcluir] = true;
+                        
+                        System.out.println("Tarefa concluida com sucesso!");
+            }
+                    else{
+                        System.out.println("Tarefa invalida.");
+                    }
           }
         }
       }
