@@ -4,6 +4,9 @@
  */
 package todolist;
 
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Aluno
@@ -12,11 +15,21 @@ public class NewJFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NewJFrame.class.getName());
 
-    /**
-     * Creates new form NewJFrame
-     */
+    DefaultTableModel model;
+    
+    private static final String CONCLUIDA = "Concluir";
+        private static final String NAO_CONCLUIDA = "Não Concluida";
+
+        private final ArrayList<String> tarefas = new ArrayList<>();
+        private final ArrayList<String> tarefasFiltradas = new ArrayList<>();
+                
+                
     public NewJFrame() {
         initComponents();
+        
+        setLocationRelativeTo(null);
+        
+        model = (DefaultTableModel) jTable1.getModel();
     }
 
     /**
@@ -29,7 +42,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        jTextFieldDescricao = new javax.swing.JTextField();
+        jTextFieldDescricaoTarefa = new javax.swing.JTextField();
         jButtonAdicionar = new javax.swing.JButton();
         jComboBoxFiltroStatus = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -41,7 +54,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextFieldDescricao.addActionListener(this::jTextFieldDescricaoActionPerformed);
+        jTextFieldDescricaoTarefa.addActionListener(this::jTextFieldDescricaoTarefaActionPerformed);
 
         jButtonAdicionar.setText("Adicionar");
         jButtonAdicionar.addActionListener(this::jButtonAdicionarActionPerformed);
@@ -73,7 +86,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextFieldDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldDescricaoTarefa, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jComboBoxFiltroStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -88,7 +101,7 @@ public class NewJFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldDescricaoTarefa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAdicionar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBoxFiltroStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -104,17 +117,55 @@ public class NewJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldDescricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDescricaoActionPerformed
+    private void jTextFieldDescricaoTarefaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDescricaoTarefaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldDescricaoActionPerformed
+    }//GEN-LAST:event_jTextFieldDescricaoTarefaActionPerformed
 
     private void jButtonAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarActionPerformed
-        // TODO add your handling code here:
+       if (jTextFieldDescricaoTarefa.getText().trim().isEmpty()){
+           JOptionPane.showMessageDialog(null,"A descrição de tarefa não pode ser vazia!");
+           return;
+       }
+       
+       if(hasTarefaRepetida(jTextFieldDescricaoTarefa.getText())){
+           JOptionPane.showMessageDialog(null,"A tarefa " + jTextFieldDescricaoTarefa.getText() + "já existe!");
+           return;
+       }
+       tarefas.add(jTextFieldDescricaoTarefa.getText() + ";" + NAO_CONCLUIDA);
+       
+       preencherTabela();
+       
+       jTextFieldDescricaoTarefa.setText("");
     }//GEN-LAST:event_jButtonAdicionarActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
+public boolean hasTarefaRepetida(String novaTarefa){
+    for (String tarefa : tarefas){
+        String dados[] = tarefa.split(";");
+        if (novaTarefa.toLowerCase().equals(dados[0].toLowerCase())){
+             return true;
+        }
+    }
+    return false;
+}
+    
+private void preencherTabela(){
+    ArrayList<String> listaTarefas;
+    
+    if (jComboBoxFiltroStatus.getSelectedIndex() >0){
+        listaTarefas = tarefasFiltradas;
+    }else{
+        listaTarefas = tarefas;
+        
+        model.setRowCount(0);
+        for (String tarefa : listaTarefas){
+            String[] dados = tarefa.split(";");
+            
+            model.addRow(new Object[]{
+                dados[0],
+                dados[1]
+            });
+        }
+    }
+}
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -145,6 +196,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBoxFiltroStatus;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextFieldDescricao;
+    private javax.swing.JTextField jTextFieldDescricaoTarefa;
     // End of variables declaration//GEN-END:variables
 }
