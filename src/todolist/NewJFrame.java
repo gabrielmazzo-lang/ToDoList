@@ -60,6 +60,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jButtonAdicionar.addActionListener(this::jButtonAdicionarActionPerformed);
 
         jComboBoxFiltroStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Concluido", "Não Concluido", " " }));
+        jComboBoxFiltroStatus.addItemListener(this::jComboBoxFiltroStatusItemStateChanged);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -175,9 +176,19 @@ public class NewJFrame extends javax.swing.JFrame {
        
        String[] dados = tarefas.get(indiceTarefaSelecionada).split(";");
        
-       tarefas.set()
+       tarefas.set(indiceTarefaSelecionada, dados[0] + ";" + CONCLUIDA);
+       
+       filtrarTabela();
+       
+       preencherTabela();
        
     }//GEN-LAST:event_jButtonConcluirTarefasActionPerformed
+
+    private void jComboBoxFiltroStatusItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxFiltroStatusItemStateChanged
+    filtrarTabela();
+    
+    preencherTabela();
+    }//GEN-LAST:event_jComboBoxFiltroStatusItemStateChanged
      private void filtrarTabela(){
          int opcao = jComboBoxFiltroStatus.getSelectedIndex();
          tarefasFiltradas.clear();
@@ -205,13 +216,14 @@ public class NewJFrame extends javax.swing.JFrame {
                      throw new AssertionError();
              }
      }
+     }
 
-    private String recuperarTarefa (int indiceTarefa){
+    private String recuperarTarefa(int indiceTarefa){
         
         if (jComboBoxFiltroStatus.getSelectedIndex() > 0){
             return tarefasFiltradas.get(indiceTarefa);
         }else{
-            return tarefasFiltradas.get(indiceTarefa);
+            return tarefas.get(indiceTarefa);
 
         }
     }
